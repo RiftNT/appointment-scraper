@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 from pynotifier import Notification
+from time import strftime, gmtime
 import time
+import os
 
 # Refer locations here: https://dfacalendar.netpinoy.com/philippines/
 location =  [
@@ -47,8 +49,11 @@ def notif_if_available(location, is_avail, details):
         ).send()
 
 def log_results(location, result):
-    with open('.\\appointment-scraper\\log.txt', 'a') as f:
-        f.write(location.upper() + ": " + result + "\n")
+    log_path = os.path.dirname(os.path.abspath(__file__)) + "\\log.txt"
+    current_time = strftime("[%Y-%m-%d %H:%M:%S] ", gmtime())
+    
+    with open(log_path, 'a') as f:
+        f.write(current_time + location.upper() + ": " + result + "\n")
 
 def execute(location):
     content = access_html_content(location)
@@ -58,6 +63,7 @@ def execute(location):
     log_results(location, result[0])
 
 if __name__ == "__main__":
+    print("Script is running..")
     while True: # To end the script, press CTRL + C
         for index in range(len(location)):
             execute(location[index])

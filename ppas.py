@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
-from urllib.error import URLError
+import plyer.platforms.win.notification
 from plyer import notification
 from time import strftime
 import time
@@ -49,8 +49,7 @@ def notif_if_available(location, is_avail, details):
     if (is_avail == True):
         notification.notify(
             title     = location,
-            message   = f"Slots Found: {details[1]}\nEarliest Date: {details[2]}",
-            timeout   = 5,
+            message   = f"Slots Found: {details[1]}\nEarliest Date: {details[2]}"
         )
         print(current_time() + "Available in " + location)
 
@@ -77,8 +76,8 @@ if __name__ == "__main__":
     error = False
     while True:
         try:
-            access_html_content(location[0])
-        except URLError:
+            urlopen('https://google.com')
+        except Exception:
             error = display_error_once(error)
             time.sleep(5)
         else:
@@ -87,4 +86,4 @@ if __name__ == "__main__":
             while True:
                 for index in range(len(location)):
                     execute(location[index])
-                time.sleep(60)
+                time.sleep(5)

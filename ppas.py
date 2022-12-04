@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
-from pynotifier import Notification
-from time import strftime, gmtime
+from urllib.error import URLError
+from plyer import notification
+from time import strftime
 import time
 import os
 
@@ -9,6 +10,7 @@ import os
 location =  [
                 "cebu", 
                 "08-temp-offsite-sm-seaside-cebu",
+                "iloilo"
             ]
 
 def access_html_content(location):
@@ -40,31 +42,49 @@ def availability_result(html_content):
         details = [availability]
     return details
 
+def current_time():
+    return strftime("[%Y-%m-%d %H:%M:%S] ", time.localtime())
+
 def notif_if_available(location, is_avail, details):
     if (is_avail == True):
-        Notification(
-            title       = location,
-            description = f"Slots Found: {details[1]}\nEarliest Date: {details[2]}",
-            duration    = 5
-        ).send()
+        notification.notify(
+            title     = location,
+            message   = f"Slots Found: {details[1]}\nEarliest Date: {details[2]}",
+            timeout   = 5,
+        )
+        print(current_time() + "Available in " + location)
 
-def log_results(location, result):
-    log_path = os.path.dirname(os.path.abspath(__file__)) + "\\log.txt"
-    current_time = strftime("[%Y-%m-%d %H:%M:%S] ", gmtime())
+def log_results(location):
+    log_path = os.path.dirname(os.path.abspath(__file__)) + "\\ppas_log.txt"
     
     with open(log_path, 'a') as f:
-        f.write(current_time + location.upper() + ": " + result + "\n")
-
+        f.write(current_time() + location.upper() + ": Available" + "\n")
+        
+def display_error_once(error):
+    if error == False:
+        print("ERROR: Attempting to reconnect..")
+    return True
+    
 def execute(location):
     content = access_html_content(location)
     result = availability_result(content)
     availability = availability_to_bool(result[0])
     notif_if_available(location, availability, result)
-    log_results(location, result[0])
+    if availability == True:
+        log_results(location)
 
 if __name__ == "__main__":
-    print("Script is running..")
-    while True: # To end the script, press CTRL + C
-        for index in range(len(location)):
-            execute(location[index])
-        time.sleep(300)
+    error = False
+    while True:
+        try:
+            access_html_content(location[0])
+        except URLError:
+            error = display_error_once(error)
+            time.sleep(5)
+        else:
+            error = False
+            print("Script is running..")
+            while True:
+                for index in range(len(location)):
+                    execute(location[index])
+                time.sleep(60)

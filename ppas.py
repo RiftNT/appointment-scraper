@@ -9,8 +9,7 @@ import os
 # Refer locations here: https://dfacalendar.netpinoy.com/philippines/
 location =  [
                 "cebu", 
-                "08-temp-offsite-sm-seaside-cebu",
-                "iloilo"
+                "08-temp-offsite-sm-seaside-cebu"
             ]
 
 def access_html_content(location):

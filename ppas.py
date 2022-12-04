@@ -53,7 +53,7 @@ def notif_if_available(location, is_avail, details):
         print(current_time() + "Available in " + location)
 
 def log_results(location):
-    log_path = os.path.dirname(os.path.abspath(__file__)) + "\\ppas_log.txt"
+    log_path = os.path.expanduser('~/Documents') + "\\ppas.log"
     
     with open(log_path, 'a') as f:
         f.write(current_time() + location.upper() + ": Available" + "\n")
@@ -85,4 +85,4 @@ if __name__ == "__main__":
             while True:
                 for index in range(len(location)):
                     execute(location[index])
-                time.sleep(5)
+                time.sleep(60)

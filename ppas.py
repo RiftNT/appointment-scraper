@@ -85,4 +85,4 @@ if __name__ == "__main__":
             while True:
                 for index in range(len(location)):
                     execute(location[index])
-                time.sleep(60)
+                time.sleep(300)

@@ -81,6 +81,9 @@ if __name__ == "__main__":
                 for index in range(len(location)):
                     execute(location[index])
                 time.sleep(5)
+        except KeyboardInterrupt:
+            print("Stopping script..")
+            break
         except Exception:
             error = display_error_once(error)
             time.sleep(300)
